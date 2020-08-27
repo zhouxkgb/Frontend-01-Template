@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二维数组</title>
+    <style>
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: green;
+            display: inline-block;
+            border: 1px white solid;
+            vertical-align: middle;
+            line-height: 100px;
+            font-size: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="board"></div>
+</body>
+<script>
+
+    // 棋盘   0 无子
+    const pattern = [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
+    ];
+    // 棋子 1=×   2=O
+    let color = 1;
+
+    // 渲染
+    function show() {
+        let board = document.getElementById('board'); // 获取棋盘dom
+        // 清空棋盘
+        board.innerHTML = '';
+        // 绘制棋盘
+        for (let i = 0; i < 3; i++) { // 行
+            for (let j = 0; j < 3; j++) { // 列
+                const cell = document.createElement('div'); // 棋格
+                cell.classList.add('cell'); // 添加class属性
+                // [j][i] 按行绘制
+                cell.innerText = pattern[i][j] == 2 ? "😊" : pattern[i][j] === 1 ? "✂" : ''; // 棋子
+                // 绑定事件
+                cell.addEventListener('click', () => move(i, j))
+
+                board.appendChild(cell); // 棋格挂载棋盘
+            }
+            board.appendChild(document.createElement('br')); // 换行
+        }
+    }
+
+    // 走棋
+    function move(x, y) {
+        // 走一步
+        pattern[x][y] = color;
+        // 判断胜负
+        if (check(pattern, color)) {
+            alert(color === 2 ? '😊 is winner!' : '✂ is winner!');
+        }
+        // 准备对方的棋子
+        color = 3 - color;
+        show();
+        if (willWin(pattern, color)) {
+            console.log(color === 2 ? '😊 will win!' : '✂ will win!')
+        }
+    }
+
+    // 判胜负
+    function check(pattern, color) {
+        // 同一行 win
+        for (let i = 0; i < 3; i++) {
+            let win = true // 初始化行相等
+            for (let j = 0; j < 3; j++) { // 当前行所有棋子 = 当前棋子
+                if (pattern[i][j] !== color) {  // 若不等
+                    win = false
+                }
+            }
+            if (win) return true
+        }
+        // 同一列 win
+        for (let i = 0; i < 3; i++) {
+            let win = true // 初始化行相等
+            for (let j = 0; j < 3; j++) { // 当前列所有棋子 = 当前棋子
+                if (pattern[j][i] !== color) {  // 若不等
+                    win = false
+                }
+            }
+            if (win) return true
+        }
+        // 正斜
+        {
+            let win = true
+            for (let i = 0; i < 3; i++) {
+                if (pattern[i][2 - i] !== color) {    // 索引和均=2
+                    win = false
+                }
+            }
+            if (win) return true
+        }
+        // 反斜
+        {
+            let win = true
+            for (let j = 0; j < 3; j++) {
+                if (pattern[j][j] !== color) { // 索引相等
+                    win = false
+                }
+            }
+            if (win) return true
+        }
+    }
+
+    // 克隆棋盘
+    function clone(pattern) {
+        return JSON.parse(JSON.stringify(pattern));
+    }
+
+    // 预判 是否可赢
+    function willWin(pattern, color) {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (pattern[i][j]) {
+                    continue;       // 眺过有棋子的格子
+                }
+                let tmp = clone(pattern); // 复制棋盘
+                tmp[i][j] = color; // 预走
+                if (check(tmp, color)) {
+                    return [j, i]
+                }
+            }
+        }
+        return null
+    }
+
+    // 下子策略
+    function bestChoice(pattern, color) {
+        let p;
+        // 一步直接赢
+        if (p = willWin(pattern, color)) {
+            return {
+                point: p,
+                result: 1
+            }
+        }
+        // 下一步不输
+        let result = -2;  // 输 0 赢 1
+        let point = null;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                // 眺过有子
+                if (pattern[i][j]) continue;
+                // 克隆棋盘
+                let tmp = clone(pattern);
+                // 预走
+                tmp[i, j] = color;
+                let r = bestChoice(tmp, 3 - color).result;
+                if (-r > result) {
+                    result = - r;
+                    point = [j, i];
+                }
+            }
+        }
+
+        return {
+            point: point,
+            result: point ? result : 0
+        }
+    }
+
+    show();
+    console.log(bestChoice(pattern, color));
+</script>
+
+</html>

@@ -28,7 +28,7 @@
     // 棋盘   0 无子
     const pattern = [
         0, 0, 0,
-        0, 0, 0,
+        0, 0, ,
         0, 0, 0
     ];
     // 棋子 1=×   2=O
@@ -136,17 +136,16 @@
     function willWin(pattern, color) {
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                if (pattern[i * 3 + j]) {
+                if (pattern[i * 3 + j])
                     continue;       // 眺过有棋子的格子
-                    let tmp = clone(pattern); // 复制棋盘
-                    tmp[i * 3 + j] = color; // 预走
-                    if (check(tmp, color)) {
-                        return [j, i]
-                    }
+                let tmp = clone(pattern); // 复制棋盘
+                tmp[i * 3 + j] = color; // 预走
+                if (check(tmp, color)) {
+                    return [i, j]
                 }
             }
-            return null
         }
+        return null
     }
 
     // 下子策略
@@ -165,17 +164,18 @@
         outer: for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 // 眺过有子
-                if (pattern[i * 3 + j]) continue;  // 所有格都满，返回结果
+                if (pattern[i * 3 + j])
+                    continue;  // 所有格都满，返回结果
                 // 克隆棋盘
                 let tmp = clone(pattern);
                 // 预走
                 tmp[i, j] = color;  // 预走了所有空格
-                let r = bestChoice(tmp, 3 - color).result; // 算出对方的结果
-                if (-r > result) {  // 如果对方结果的负数 好于我当前结果，就替换
+                let r = bestChoice(tmp, 3 - color).result;
+                if (-r > result) {
                     result = - r;
-                    point = [i, j];  // 所以这个坐标是最后的坐标，而不是当前要下的坐标
+                    point = [i, j];
                 }
-                if (result === 1) { // 如果好到赢就直接出
+                if (result === 1) {
                     break outer;
                 }
             }

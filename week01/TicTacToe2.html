@@ -28,7 +28,7 @@
     // 棋盘   0 无子
     const pattern = [
         0, 0, 0,
-        0, 0, ,
+        0, 0, 0,
         0, 0, 0
     ];
     // 棋子 1=×   2=O
@@ -136,7 +136,7 @@
     function willWin(pattern, color) {
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                if (pattern[i * 3 + j])
+                if (pattern[i * 3 + j] !== 0)
                     continue;       // 眺过有棋子的格子
                 let tmp = clone(pattern); // 复制棋盘
                 tmp[i * 3 + j] = color; // 预走
@@ -148,34 +148,36 @@
         return null
     }
 
-    // 下子策略
+    // A走一步
+    // 执行的是B下子策略  
+    // 要么直接赢
+    // 要么尽量不输
     function bestChoice(pattern, color) {
-        let p;
-        // 下一步直接赢
-        if (p = willWin(pattern, color)) {
+        let point = willWin(pattern, color);
+        // 直接赢
+        if (point) {
             return {
-                point: p,    // 坐标 
+                point: point,    // 坐标 
                 result: 1 // 赢
             }
         }
-        // 下一步不输  对方result !=1
-        let result = -2;  // 输 -1 赢 1 和 0
-        let point = null;
+        // 尽量不输  B的result尽量大   ，A的result 尽量小
+        let result = -1;  // 输 -1 赢 1 和 0
         outer: for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 // 眺过有子
-                if (pattern[i * 3 + j])
+                if (pattern[i * 3 + j] !== 0)
                     continue;  // 所有格都满，返回结果
                 // 克隆棋盘
                 let tmp = clone(pattern);
                 // 预走
-                tmp[i, j] = color;  // 预走了所有空格
-                let r = bestChoice(tmp, 3 - color).result;
-                if (-r > result) {
-                    result = - r;
+                tmp[i * 3 + j] = color;  // B 遍历走空格 这个格子不好 下一个,这个格子还行 下一个， 
+                let opp = bestChoice(tmp, 3 - color); // A 赢 r=1   r=0  r= 1
+                if (-opp.result >= result) {  // -r = -1  ，  -r = 0    -r=-1
+                    result = - opp.result;
                     point = [i, j];
                 }
-                if (result === 1) {
+                if (result == 1) {
                     break outer;
                 }
             }

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="box">
+        <div id='son'></div>
+    </div>
+</body>
+
+<script>
+    let box = document.getElementById('box')
+    box.style.position = 'absolute'
+    box.style.width = '500px'
+    box.style.height = '500px'
+    box.style.backgroundColor = 'green'
+    let son = document.getElementById('son')
+    son.style.width='200px'
+    son.style.height='200px'
+    son.style.backgroundColor='yellow'
+// 鼠标左键点击弹起后触发
+// box.addEventListener('click',()=>{
+//     console.log('click')
+// })
+
+// 鼠标左右键弹起都触发
+// box.addEventListener('mouseup',()=>{
+//     console.log('mouseup')
+// })
+
+// 鼠标左右键按下都触发
+box.addEventListener('mousedown',()=>{
+    console.log('mousedown')
+})
+
+
+// 鼠标移进触发
+// box.addEventListener('mouseenter',()=>{
+//     console.log('mouseenter')
+// })
+
+// box.addEventListener('mouseover',()=>{
+//     console.log('mouseover')   // 给子元素绑定事件
+// })
+
+// 鼠标移出触发
+// box.addEventListener('mouseout',()=>{
+//     console.log('mouseout')   // 给子元素绑定事件
+// })
+
+// box.addEventListener('mouseleave',()=>{
+//     console.log('mouseleave')
+// })
+
+// box.addEventListener('mousemove',()=>{
+//     console.log('mousemove')  // 给子元素绑定事件
+// })
+</script>
+
+</html>

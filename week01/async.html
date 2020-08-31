@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div {
+            border: 1px solid red;
+            background-color: gray;
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            border-radius: 50px;
+        }
+
+        .green.light {
+            background-color: green;
+        }
+
+        .red.light {
+            background-color: red;
+        }
+
+        .yellow.light {
+            background-color: yellow;
+        }
+    </style>
+</head>
+
+<body>
+    <div class='red'></div>
+    <div class='yellow'></div>
+    <div class='green'></div>
+
+</body>
+<script>
+    function green() {
+        var lights = document.getElementsByTagName('div')
+        for (let i = 0; i < 3; i++) {
+            lights[i].classList.remove('light')
+        }
+        document.getElementsByClassName('green')[0].classList.add('light')
+    }
+
+    function red() {
+        var lights = document.getElementsByTagName('div')
+        for (let i = 0; i < 3; i++) {
+            lights[i].classList.remove('light')
+        }
+        document.getElementsByClassName('red')[0].classList.add('light')
+    }
+
+    function yellow() {
+        var lights = document.getElementsByTagName('div')
+        for (let i = 0; i < 3; i++) {
+            lights[i].classList.remove('light')
+        }
+        document.getElementsByClassName('yellow')[0].classList.add('light')
+    }
+
+    function go() {
+        red()
+        setTimeout(function () {
+            yellow()
+            setTimeout(function () {
+                green()
+                setTimeout(function () {
+                    go()
+                }, 10000)
+            }, 2000)
+        }, 5000)
+    }
+
+</script>
+
+</html>

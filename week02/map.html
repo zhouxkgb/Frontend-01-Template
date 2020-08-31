@@ -40,18 +40,19 @@
             // 墙渲染颜色
             if (map[i * 100 + j] == 1) {
                 cell.style.backgroundColor = 'black';
-                cell.addEventListener('mousemove', () => {
-                    if (mousedown) {
-                        if (clear) {
-                            cell.style.backgroundColor = ''
-                            map[100 * i + j] = 0
-                        } else {
-                            cell.style.backgroundColor = 'black'
-                            map[i * 100 + j] = 1
-                        }
-                    }
-                })
             }
+            cell.addEventListener('mousemove', () => {
+                if (mousedown) {
+                    if (clear) {
+                        cell.style.backgroundColor = ''
+                        map[100 * i + j] = 0
+                    } else {
+                        cell.style.backgroundColor = 'black'
+                        map[i * 100 + j] = 1
+                    }
+                }
+            })
+
             container.appendChild(cell)
         }
     }

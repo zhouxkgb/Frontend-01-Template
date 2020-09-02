@@ -70,35 +70,59 @@
         e.preventDefault()
     })
 
-    function path(map, start, end) {
+    function sleep(t) {
+        return new Promise(function (resolve) {
+            setTimeout(resolve, t)
+        })
+    }
+
+    async function findPath(map, start, end) {
         // 存坐标的容器 路径
+        let table = Object.create(map)
         var queue = [start]
         // 插入
-        function insert(x, y) {
+        async function insert(x, y, pre) {
             // 如果坐标越界 直接返回不进队列
             if (x < 0 || x >= 100 || y < 0 || y >= 100) {
                 return
             }
             // 如果走过或者是墙 就返回不进队列
-            if (map[x * 100 + y]) {
+            if (table[x * 100 + y]) {
                 return
             }
-            map[x * 100 + y] = 2
-            queue.push([x, y])
+            // await sleep(30)
+            container.children[x * 100 + y].style.backgroundColor = 'lightgreen'
+            table[x * 100 + y] = pre  // 当前点值记录上一个点
+            queue.push([x, y])  // 当前点放入队列
         }
 
+        // 寻址
         while (queue.length) {
             let [x, y] = queue.shift()
-            if (x === end[0] && y === end[1]) {
-                return true
+            if (x === end[0] && y === end[1]) { // 找到了终点
+                // return true
+                let path = []
+                // 绘制路线
+                while (x != start[0] || y != start[1]) { // 不是起点
+                    path.push(map[x * 100 + y]) // 把该点值记录下来
+                    // debugger
+                    [x, y] = table[x * 100 + y]  // 解构赋值上一个坐标
+                    await sleep(30);
+                    container.children[x * 100 + y].style.backgroundColor = 'purple'
+                }
+                return path
             }
-            insert(x - 1, y)
-            insert(x, y - 1)
-            insert(x + 1, y)
-            insert(x, y + 1)
+            await insert(x - 1, y, [x, y]) // 前一个点记录
+            await insert(x, y - 1, [x, y])
+            await insert(x + 1, y, [x, y])
+            await insert(x, y + 1, [x, y])
 
+            await insert(x - 1, y - 1, [x, y])
+            await insert(x + 1, y - 1, [x, y])
+            await insert(x - 1, y + 1, [x, y])
+            await insert(x + 1, y + 1, [x, y])
         }
-        return false
+        return null
     }
 </script>
 
